@@ -1,0 +1,30 @@
+app-id: rs.ruffle.desktop
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: ruffle
+modules:
+  - name: ruffle
+    buildsystem: simple
+    build-commands:
+      - ls
+      - cargo --offline fetch --manifest-path Cargo.toml --verbose
+      - cargo --offline build --release --verbose --package ruffle_desktop
+      - install -Dm 755 target/release/ruffle -t /app/bin
+      - install -Dm 644 assets/${FLATPAK_ID}.desktop -t /app/share/applications
+      - install -Dm 644 assets/${FLATPAK_ID}.metainfo.xml -t /app/share/metainfo
+    build-options:
+      append-path: /usr/lib/sdk/rust-stable/bin
+      env:
+        CARGO_HOME: /run/build/ruffle/cargo
+    sources:
+      - cargo-sources.json
+      - type: git
+        url: https://github.com/ruffle-rs/ruffle.git
+        branch: master
+finish-args:
+  - --share=network
+  - --socket=wayland
+  - --socket=fallback-x11
