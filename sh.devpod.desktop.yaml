@@ -1,0 +1,10 @@
+app-id: sh.devpod.desktop
+runtime: org.freedesktop.Platform
+runtime-version: "23.08"
+sdk: org.freedesktop.Sdk
+command: dev-pod
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+modules:
